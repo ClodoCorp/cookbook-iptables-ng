@@ -3,6 +3,7 @@
 # Attributes:: default
 #
 # Copyright 2012, Chris Aumann
+# Copyright 2014, Vasiliy Tolstov
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,11 +22,11 @@
 # Packages to install
 default['iptables-ng']['packages'] = case node['platform_family']
 when 'debian'
-  %w{iptables iptables-persistent}
+  %w{iptables iptables-persistent ipset}
 when 'rhel'
-  %w{iptables iptables-ipv6}
+  %w{iptables iptables-ipv6 ipset}
 else
-  %w{iptables}
+  %w{iptables ipset}
 end
 
 # Where the rules are stored and how they are executed
@@ -44,35 +45,40 @@ when 'debian'
     default['iptables-ng']['script_ipv4'] = '/etc/iptables/rules.v4'
     default['iptables-ng']['script_ipv6'] = '/etc/iptables/rules.v6'
   end
+  default['iptables-ng']['sets'] = '/etc/iptables/sets'
 
 when 'ubuntu'
   default['iptables-ng']['service_ipv4'] = 'iptables-persistent'
   default['iptables-ng']['service_ipv6'] = 'iptables-persistent'
   default['iptables-ng']['script_ipv4'] = '/etc/iptables/rules.v4'
   default['iptables-ng']['script_ipv6'] = '/etc/iptables/rules.v6'
-
+  default['iptables-ng']['sets'] = '/etc/iptables/sets'
 
 when 'redhat', 'centos', 'scientific', 'amazon', 'fedora'
   default['iptables-ng']['service_ipv4'] = 'iptables'
   default['iptables-ng']['service_ipv6'] = 'ip6tables'
   default['iptables-ng']['script_ipv4'] = '/etc/sysconfig/iptables'
   default['iptables-ng']['script_ipv6'] = '/etc/sysconfig/ip6tables'
+  default['iptables-ng']['sets'] = '/etc/sysconfig/ipsets'
 
 when 'gentoo'
   default['iptables-ng']['service_ipv4'] = 'iptables'
   default['iptables-ng']['service_ipv6'] = 'ip6tables'
   default['iptables-ng']['script_ipv4'] = '/var/lib/iptables/rules-save'
   default['iptables-ng']['script_ipv6'] = '/var/lib/ip6tables/rules-save'
+  default['iptables-ng']['sets'] = '/var/lib/iptables/sets-save'
 
 when 'arch'
   default['iptables-ng']['service_ipv4'] = 'iptables'
   default['iptables-ng']['service_ipv6'] = 'ip6tables'
   default['iptables-ng']['script_ipv4'] = '/etc/iptables/iptables.rules'
   default['iptables-ng']['script_ipv6'] = '/etc/iptables/ip6tables.rules'
+  default['iptables-ng']['sets'] = '/etc/iptables/ipsets'
 
 else
   default['iptables-ng']['script_ipv4'] = '/etc/iptables-rules.ipt'
   default['iptables-ng']['script_ipv6'] = '/etc/ip6tables-rules.ipt'
+  default['iptables-ng']['sets'] = '/etc/ipsets'
 end
 
 default['iptables-ng']['data_bag'] = "iptables-ng"

@@ -48,3 +48,15 @@ ruby_block 'restart_iptables' do
 
   action :nothing
 end
+
+ruby_block 'create_sets' do
+  block do
+    class Chef::Resource::RubyBlock
+      include Iptables::Manage
+    end
+
+    create_ipset_sets
+  end
+
+  action :nothing
+end

@@ -20,6 +20,17 @@
 
 include_recipe 'iptables-ng::install'
 
+# Apply sets from node attributes
+node['iptables-ng']['sets'].each do |setname, setopts|
+  # Apply rules
+  iptables_ng_set "#{setname}-attribute-set" do
+    name      setname
+    options   setopts
+    ip_version r['ip_version'] if r['ip_version']
+  end
+end
+
+
 # Apply rules from node attributes
 node['iptables-ng']['rules'].each do |table, chains|
 
