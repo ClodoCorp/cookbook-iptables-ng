@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: iptables-ng
-# Resource:: set
+# Recipe:: restore_sets
 #
 # Copyright 2014, Vasiliy Tolstov
 #
@@ -18,16 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-actions        :create, :create_if_missing, :delete
-default_action :create
+# This was implemented as a internal-only provider.
+# Apparently, calling a LWRP from a LWRP doesnt' really work with
+# subscribes / notifies. Therefore, using this workaround.
 
-attribute :name,       kind_of: String, name_attribute: true
-attribute :options,    kind_of: Hash, default: {}
-
-def initialize(*args)
-  super
-  @action = :create
-
-  # Include iptables-ng::install recipe
-  @run_context.include_recipe('iptables-ng::install')
+module Iptables
+  module Manage
+    def restore_sets()
+      Chef::Log.info 'applying sets manually'
+      Chef::Resource::Execute.new("run ipset restore", run_context).tap do |execute|
+        execute.command("ipset restore < #{node['iptables-ng']['script_sets']}")
+        execute.run_action(:run)
+      end
+    end
+  end
 end
+

@@ -60,3 +60,17 @@ ruby_block 'create_sets' do
 
   action :nothing
 end
+
+ruby_block 'restore_sets' do
+  block do
+    class Chef::Resource::RubyBlock
+      include Iptables::Manage
+    end
+
+    [4, 6].each do |ip_version|
+      restore_sets(ip_version)
+    end
+  end
+
+  action :nothing
+end

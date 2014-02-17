@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: iptables-ng
-# Resource:: set
+# Attributes:: default-sets
 #
 # Copyright 2014, Vasiliy Tolstov
 #
@@ -18,16 +18,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-actions        :create, :create_if_missing, :delete
-default_action :create
-
-attribute :name,       kind_of: String, name_attribute: true
-attribute :options,    kind_of: Hash, default: {}
-
-def initialize(*args)
-  super
-  @action = :create
-
-  # Include iptables-ng::install recipe
-  @run_context.include_recipe('iptables-ng::install')
-end
+# Set up default sets
+default['iptables-ng']['sets'] = []

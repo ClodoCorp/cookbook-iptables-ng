@@ -33,34 +33,33 @@ end
 
 def edit_set(exec_action)
   # Create set for given ip_versions
-  Array(new_resource.ip_version).each do |ip_version|
 
-    set_file = ''
+  set_file = ''
 
-    new_resource.options.each do |opt|
-      set_file = set_file + opt.join(" ")
-    end
- 
-    directory "/etc/iptables.d/sets/#{new_resource.name}" do
-      owner  'root'
-      group  'root'
-      mode   00700
-      recursive true
-      not_if { exec_action == :delete }
-    end
-
-    set_path = "/etc/iptables.d/sets/#{new_resource.name}.set_v#{ip_version}"
-
-    r = file set_path do
-      owner    'root'
-      group    'root'
-      mode     00600
-      content  set_file
-      notifies :create, 'ruby_block[create_sets]', :delayed
-      action   exec_action
-    end
-
-    new_resource.updated_by_last_action(true) if r.updated_by_last_action?
+  new_resource.options.each do |opt|
+    set_file = set_file + opt.join(" ")
   end
+
+  directory "/etc/iptables.d/sets/" do
+    owner  'root'
+    group  'root'
+    mode   00700
+    recursive true
+    not_if { exec_action == :delete }
+  end
+
+  set_path = "/etc/iptables.d/sets/#{new_resource.name}"
+
+  r = file set_path do
+    owner    'root'
+    group    'root'
+    mode     00600
+    content  set_file
+    notifies :create, 'ruby_block[create_sets]', :delayed
+    notifies :create, 'ruby_block[restore_sets]', :delayed
+    action   exec_action
+  end
+
+  new_resource.updated_by_last_action(true) if r.updated_by_last_action?
 
 end

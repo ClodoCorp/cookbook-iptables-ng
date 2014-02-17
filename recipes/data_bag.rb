@@ -1,4 +1,5 @@
 rules = Mash.new
+sets = Mash.new
 bag = node['iptables-ng']['data_bag']
 
 node["iptables-ng"]["data_bags"].each do |item|
@@ -15,8 +16,9 @@ node["iptables-ng"]["data_bags"].each do |item|
   end
 
   rules = Chef::Mixin::DeepMerge.merge(rules, bag_item["rules"])
-
+  sets = Chef::Mixin::DeepMerge.merge(sets, bag_item["sets"])
 end
 
+node.set['iptables-ng']['sets'] = sets
 node.set['iptables-ng']['rules'] = rules
 include_recipe 'iptables-ng'
