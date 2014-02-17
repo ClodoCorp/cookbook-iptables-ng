@@ -22,6 +22,7 @@ actions        :create, :create_if_missing, :delete
 default_action :create
 
 attribute :name,       kind_of: String, name_attribute: true
+attribute :type,       kind_of: String
 attribute :options,    kind_of: Hash, default: {}
 
 def initialize(*args)

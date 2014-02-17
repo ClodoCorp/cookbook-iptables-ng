@@ -1,3 +1,5 @@
+
+
 #
 # Cookbook Name:: iptables-ng
 # Recipe:: default
@@ -21,12 +23,12 @@
 include_recipe 'iptables-ng::install'
 
 # Apply sets from node attributes
-node['iptables-ng']['sets'].each do |setname, setopts|
-  # Apply rules
-  iptables_ng_set "#{setname}-attribute-set" do
-    name      setname
-    options   setopts
-    ip_version r['ip_version'] if r['ip_version']
+node['iptables-ng']['sets'].each do |name, options|
+  # Apply sets
+  iptables_ng_set "#{name}-attribute-set" do
+    name      name
+    type      options.select {|k,v| k == "type"}["type"].to_s
+    options   options.reject {|k,v| k == "type"}
   end
 end
 

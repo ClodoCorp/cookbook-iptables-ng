@@ -1,5 +1,5 @@
 rules = Mash.new
-sets = Mash.new
+sets = Hash.new
 bag = node['iptables-ng']['data_bag']
 
 node["iptables-ng"]["data_bags"].each do |item|
@@ -16,7 +16,12 @@ node["iptables-ng"]["data_bags"].each do |item|
   end
 
   rules = Chef::Mixin::DeepMerge.merge(rules, bag_item["rules"])
-  sets = Chef::Mixin::DeepMerge.merge(sets, bag_item["sets"])
+
+  next unless bag_item["sets"]
+  
+  bag_item["sets"].each do |s|
+    sets = Chef::Mixin::DeepMerge.merge(sets, s)
+  end
 end
 
 node.set['iptables-ng']['sets'] = sets

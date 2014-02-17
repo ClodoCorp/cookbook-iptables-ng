@@ -27,15 +27,14 @@ module Iptables
     def create_ipset_sets()
       sets = {}
 
-      Dir["/etc/iptables.d/sets"].each do |path|
-        filename = path.split('/')[4]
-        set = ::File.basename(filename)
+      Dir["/etc/iptables.d/sets/*"].each do |path|
+        set = ::File.basename(path)
         sets[set] = ::File.read(path)
       end
-
+      Chef::Log.info("DDD #{sets}")
       ipset_restore = ''
-      sets.each do |set|
-        ipset_restore << "#{set.chomp}\n"
+      sets.each do |k, v|
+        ipset_restore << "#{v.chomp}\n"
       end
 
       Chef::Resource::File.new(node['iptables-ng']["script_sets"], run_context).tap do |file|

@@ -67,9 +67,7 @@ ruby_block 'restore_sets' do
       include Iptables::Manage
     end
 
-    [4, 6].each do |ip_version|
-      restore_sets(ip_version)
-    end
+    restore_sets
   end
 
   action :nothing

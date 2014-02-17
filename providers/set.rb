@@ -32,13 +32,14 @@ end
 
 
 def edit_set(exec_action)
-  # Create set for given ip_versions
 
-  set_file = ''
+  set_file = "create #{new_resource.name} #{new_resource.type}"
 
   new_resource.options.each do |opt|
-    set_file = set_file + opt.join(" ")
+    set_file = set_file + " " + opt.join(" ")
   end
+
+  set_file = set_file + "\n"
 
   directory "/etc/iptables.d/sets/" do
     owner  'root'
