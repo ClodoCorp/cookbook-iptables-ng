@@ -32,11 +32,6 @@ node['iptables-ng']['sets'].each do |name, options|
   end
 end
 
-unless node['iptables-ng']['sets'].nil?
-  include_recipe 'iptables-ng::manage'
-  restore_sets
-end
-
 # Apply rules from node attributes
 node['iptables-ng']['rules'].each do |table, chains|
 
