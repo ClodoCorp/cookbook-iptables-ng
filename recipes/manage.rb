@@ -67,7 +67,7 @@ ruby_block 'restore_sets' do
       include Iptables::Manage
     end
 
-    restore_sets
+    restore_ipset_sets
   end
 
   action :nothing

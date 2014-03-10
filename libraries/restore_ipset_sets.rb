@@ -24,7 +24,7 @@
 
 module Iptables
   module Manage
-    def restore_sets()
+    def restore_ipset_sets()
       Chef::Log.info 'applying sets manually'
       Chef::Resource::Execute.new("run ipset restore", run_context).tap do |execute|
         execute.command("ipset restore < #{node['iptables-ng']['script_sets']}")
