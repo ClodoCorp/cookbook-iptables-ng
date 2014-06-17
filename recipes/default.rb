@@ -70,7 +70,7 @@ end
 
 unless node['iptables-ng']['rules'].nil?
   execute "update rules if needed" do
-    command "/usr/bin/true"
+    command "exit"
     notifies :create, 'ruby_block[create_rules]', :delayed
     notifies :create, 'ruby_block[restart_iptables]', :delayed
   end
