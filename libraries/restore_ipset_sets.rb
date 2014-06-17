@@ -26,6 +26,12 @@ module Iptables
   module Manage
     def restore_ipset_sets()
       Chef::Log.info 'applying sets manually'
+      %w{filter nat raw mangle}.each do |t|
+        Chef::Resource::Execute.new("flush iptables", run_context).tap do |execute|
+          execute.command("iptables -t #{t} --flush; iptables -t #{t} --delete-chain")
+          execute.run_action(:run)
+        end
+      end
       Chef::Resource::Execute.new("run ipset restore", run_context).tap do |execute|
         execute.command("ipset destroy; ipset restore < #{node['iptables-ng']['script_sets']}")
         execute.run_action(:run)
