@@ -62,7 +62,7 @@ end
 
 unless node['iptables-ng']['sets'].nil?
   execute "update sets if needed" do
-    command "exit"
+    command "true"
     notifies :create, 'ruby_block[create_sets]', :delayed
     notifies :create, 'ruby_block[restore_sets]', :delayed
   end
@@ -70,7 +70,7 @@ end
 
 unless node['iptables-ng']['rules'].nil?
   execute "update rules if needed" do
-    command "exit"
+    command "true"
     notifies :create, 'ruby_block[create_rules]', :delayed
     notifies :create, 'ruby_block[restart_iptables]', :delayed
   end
