@@ -21,7 +21,7 @@
 #
 
 # This was implemented as a internal-only provider.
-# Apparently, calling a LWRP from a LWRP doesnt" really work with
+# Apparently, calling a LWRP from a LWRP doesn't really work with
 # subscribes / notifies. Therefore, using this workaround.
 require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
