@@ -29,17 +29,16 @@ include Chef::Mixin::ShellOut
 module Iptables
   module Manage
     def restore_ipset_sets()
-      Chef::Log.info "applying sets manually"
-      shell_out!("iptables-save").stdout.each_line do |rule|
+      Chef::Log.info 'applying sets manually'
+      shell_out!('iptables-save').stdout.each_line do |rule|
         next unless rule.include? "--match-set"
-        `iptables #{rule.sub!(/^-A/, '-D')}`
+        shell_out!("iptables #{rule.sub!(/^-A/, '-D')}").error!
       end
 
-      Chef::Resource::Execute.new("run ipset restore", run_context).tap do |execute|
-        execute.command("ipset destroy; ipset restore < #{node["iptables-ng"]["script_sets"]}")
+      Chef::Resource::Execute.new('run ipset restore', run_context).tap do |execute|
+        execute.command("ipset destroy; ipset restore < #{node['iptables-ng']['script_sets']}")
         execute.run_action(:run)
       end
     end
   end
 end
-
