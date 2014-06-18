@@ -2,6 +2,8 @@
 # Cookbook Name:: iptables-ng
 # Recipe:: restore_sets
 #
+# vim: ts=2:sw=2:expandtab
+#
 # Copyright 2014, Vasiliy Tolstov
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,18 +21,24 @@
 #
 
 # This was implemented as a internal-only provider.
-# Apparently, calling a LWRP from a LWRP doesnt' really work with
+# Apparently, calling a LWRP from a LWRP doesn't really work with
 # subscribes / notifies. Therefore, using this workaround.
+require 'chef/mixin/shell_out'
+include Chef::Mixin::ShellOut
 
 module Iptables
   module Manage
     def restore_ipset_sets()
       Chef::Log.info 'applying sets manually'
-      Chef::Resource::Execute.new("run ipset restore", run_context).tap do |execute|
+      shell_out!('iptables-save').stdout.each_line do |rule|
+        next unless rule.include? "--match-set"
+        shell_out!("iptables #{rule.sub!(/^-A/, '-D')}").error!
+      end
+
+      Chef::Resource::Execute.new('run ipset restore', run_context).tap do |execute|
         execute.command("ipset destroy; ipset restore < #{node['iptables-ng']['script_sets']}")
         execute.run_action(:run)
       end
     end
   end
 end
-
