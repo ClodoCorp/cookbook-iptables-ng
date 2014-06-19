@@ -31,7 +31,7 @@ module Iptables
         set = ::File.basename(path)
         sets[set] = ::File.read(path)
       end
-      Chef::Log.info("DDD #{sets}")
+ 
       ipset_restore = ''
       sets.each do |k, v|
         ipset_restore << "#{v.chomp}\n"
