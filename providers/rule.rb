@@ -39,8 +39,12 @@ end
 def edit_rule(exec_action)
   # Create rule for given ip_versions
   Array(new_resource.ip_version).each do |ip_version|
-    # ipv6 doesn't support nat
-    next if new_resource.table == 'nat' and ip_version == 6
+
+    # IPv6 NAT is not supported until Linux 3.7 and iptables 1.4.17
+    next if new_resource.table == 'nat' && \
+    ip_version == 6 && \
+    ( Chef::VersionConstraint.new("< 3.7").include?(node['kernel']['release'][/\d+\.\d+/]) && \
+    Chef::VersionConstraint.new("< 1.4.17").include?(`iptables --version`[/\d+\.\d+\.\d+/]) )
 
     rule_file = ''
     Array(new_resource.rule).each { |r| rule_file << "--append #{new_resource.chain} #{r.chomp}\n" }
@@ -69,5 +73,3 @@ def edit_rule(exec_action)
 
   # TODO: link to .rule for rhel compatibility?
 end
-
-

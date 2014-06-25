@@ -36,8 +36,11 @@ module Iptables
         table, chain, filename = path.split('/')[3..5]
         rule = ::File.basename(filename)
 
-        # ipv6 doesn't support nat
-        next if table == 'nat' and ip_version == 6
+        # IPv6 NAT is not supported until Linux 3.7 and iptables 1.4.17
+        next if table == 'nat' && \
+        ip_version == 6 && \
+        ( Chef::VersionConstraint.new("< 3.7").include?(node['kernel']['release'][/\d+\.\d+/]) || \
+        Chef::VersionConstraint.new("< 1.4.17").include?(`iptables --version`[/\d+\.\d+\.\d+/]) )
 
         # Create hashes unless they already exist, and add the rule
         rules[table] ||= {}
