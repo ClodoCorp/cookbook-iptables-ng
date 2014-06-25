@@ -62,8 +62,6 @@ def edit_set(exec_action)
     group    'root'
     mode     00600
     content  set_file
-    notifies :create, 'ruby_block[create_sets]', :immediately
-    notifies :create, 'ruby_block[restore_sets]', :immediately
     action   exec_action
   end
 
