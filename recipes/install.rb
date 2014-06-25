@@ -48,6 +48,8 @@ node['iptables-ng']['rules'].each do |table, chains|
       table  table
       policy policy['default']
       action :create_if_missing
+      notifies :create, 'ruby_block[create_rules]', :delayed
+      notifies :create, 'ruby_block[restart_iptables]', :delayed
     end
   end
 end
