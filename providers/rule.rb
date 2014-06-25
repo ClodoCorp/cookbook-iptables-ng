@@ -17,6 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+use_inline_resources if defined?(use_inline_resources)
+
+def whyrun_supported?
+  true
+end
 
 action :create do
   edit_rule(:create)

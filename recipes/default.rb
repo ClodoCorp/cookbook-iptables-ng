@@ -61,16 +61,18 @@ node['iptables-ng']['rules'].each do |table, chains|
 end
 
 unless node['iptables-ng']['sets'].nil?
-  execute "update sets if needed" do
-    command "true"
-    notifies :create, 'ruby_block[create_sets]', :delayed
-    notifies :create, 'ruby_block[restore_sets]', :delayed
+  ruby_block 'notify-restore-sets' do
+    block do
+    end
+    notifies :run, 'ruby_block[create_sets]', :delayed
+    notifies :run, 'ruby_block[restore_sets]', :delayed
   end
 end
 
 unless node['iptables-ng']['rules'].nil?
-  execute "update rules if needed" do
-    command "true"
+  ruby_block 'notify-restore-rules' do
+    block do
+    end
     notifies :create, 'ruby_block[create_rules]', :delayed
     notifies :create, 'ruby_block[restart_iptables]', :delayed
   end
