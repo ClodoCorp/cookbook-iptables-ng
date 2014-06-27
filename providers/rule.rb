@@ -58,13 +58,11 @@ def edit_rule(exec_action)
     rule_path = "/etc/iptables.d/#{new_resource.table}/#{new_resource.chain}/#{new_resource.name}.rule_v#{ip_version}"
 
     r = file rule_path do
-      owner 'root'
-      group 'root'
-      mode 00600
-      content rule_file
-      notifies :create, 'ruby_block[create_rules]', :delayed
-      notifies :create, 'ruby_block[restart_iptables]', :delayed
-      action exec_action
+      owner    'root'
+      group    'root'
+      mode     00600
+      content  rule_file
+      action   exec_action
     end
 
     new_resource.updated_by_last_action(true) if r.updated_by_last_action?

@@ -53,13 +53,11 @@ def edit_chain(exec_action)
   rule_path = "/etc/iptables.d/#{new_resource.table}/#{new_resource.chain}/default"
 
   r = file rule_path do
-    owner 'root'
-    group 'root'
-    mode 00600
-    content "#{policy}\n"
-    notifies :create, 'ruby_block[create_rules]', :delayed
-    notifies :create, 'ruby_block[restart_iptables]', :delayed
-    action exec_action
+    owner    'root'
+    group    'root'
+    mode     00600
+    content  "#{policy}\n"
+    action   exec_action
   end
 
   new_resource.updated_by_last_action(true) if r.updated_by_last_action?

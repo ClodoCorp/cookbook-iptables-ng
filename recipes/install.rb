@@ -29,6 +29,12 @@ package 'ufw' do
   only_if { node['platform_family'] == 'debian' }
 end
 
+# Delete directories
+directory "/etc/iptables.d" do
+  recursive true
+  action :delete
+end if File.directory?("/etc/iptables.d")
+
 # Create directories
 directory '/etc/iptables.d' do
   mode 00700
