@@ -26,9 +26,9 @@ include_recipe 'iptables-ng::install'
 node['iptables-ng']['sets'].each do |name, options|
   # Apply sets
   iptables_ng_set "#{name}-attribute-set" do
-    name      name
-    type      options.select {|k,v| k == "type"}["type"].to_s
-    options   options.reject {|k,v| k == "type"}
+    name name
+    type options.select { |k, _v| k == 'type' }['type'].to_s
+    options options.reject { |k, _v| k == 'type' }
   end
 end
 
@@ -40,40 +40,38 @@ node['iptables-ng']['rules'].each do |table, chains|
   chains.each do |chain, p|
     # policy is read only, duplicate it
     policy = p.dup
-    
+
     # Apply chain policy
     iptables_ng_chain "attribute-policy-#{chain}" do
-      chain  chain
-      table  table
+      chain chain
+      table table
       policy policy.delete('default')
     end
-    
+
     # Apply rules
     policy.each do |name, r|
       iptables_ng_rule "#{name}-#{table}-#{chain}-attribute-rule" do
-        chain      chain
-        table      table
-        rule       r['rule']
+        chain chain
+        table table
+        rule r['rule']
         ip_version r['ip_version'] if r['ip_version']
       end
     end
   end
 end
 
-unless node['iptables-ng']['sets'].nil?
-  ruby_block 'notify-restore-sets' do
-    block do
-    end
-    notifies :run, 'ruby_block[create_sets]', :delayed
-    notifies :run, 'ruby_block[restore_sets]', :delayed
+ruby_block 'notify-restore-sets' do
+  block do
   end
+  notifies :run, 'ruby_block[create_sets]', :delayed
+  notifies :run, 'ruby_block[restore_sets]', :delayed
+  not_if { node['iptables-ng']['sets'].nil? }
 end
 
-unless node['iptables-ng']['rules'].nil?
-  ruby_block 'notify-restore-rules' do
-    block do
-    end
-    notifies :create, 'ruby_block[create_rules]', :delayed
-    notifies :create, 'ruby_block[restart_iptables]', :delayed
+ruby_block 'notify-restore-rules' do
+  block do
   end
+  notifies :create, 'ruby_block[create_rules]', :delayed
+  notifies :create, 'ruby_block[restart_iptables]', :delayed
+  not_if { node['iptables-ng']['rules'].nil? }
 end

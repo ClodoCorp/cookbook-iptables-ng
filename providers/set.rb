@@ -23,7 +23,6 @@ def whyrun_supported?
   true
 end
 
-
 action :create do
   edit_set(:create)
 end
@@ -36,21 +35,19 @@ action :delete do
   edit_set(:delete)
 end
 
-
 def edit_set(exec_action)
-
   set_file = "create #{new_resource.name} #{new_resource.type}"
 
   new_resource.options.each do |opt|
-    set_file = set_file + " " + opt.join(" ")
+    set_file = set_file + ' ' + opt.join(' ')
   end
 
-  set_file = set_file + "\n"
+  set_file += "\n"
 
-  directory "/etc/iptables.d/sets/" do
-    owner  'root'
-    group  'root'
-    mode   00700
+  directory '/etc/iptables.d/sets/' do
+    owner 'root'
+    group 'root'
+    mode 00700
     recursive true
     not_if { exec_action == :delete }
   end
@@ -58,15 +55,14 @@ def edit_set(exec_action)
   set_path = "/etc/iptables.d/sets/#{new_resource.name}"
 
   r = file set_path do
-    owner    'root'
-    group    'root'
-    mode     00600
-    content  set_file
+    owner 'root'
+    group 'root'
+    mode 00600
+    content set_file
     notifies :create, 'ruby_block[create_sets]', :immediately
     notifies :create, 'ruby_block[restore_sets]', :immediately
-    action   exec_action
+    action exec_action
   end
 
   new_resource.updated_by_last_action(true) if r.updated_by_last_action?
-
 end

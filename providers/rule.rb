@@ -35,7 +35,6 @@ action :delete do
   edit_rule(:delete)
 end
 
-
 def edit_rule(exec_action)
   # Create rule for given ip_versions
   Array(new_resource.ip_version).each do |ip_version|
@@ -43,29 +42,29 @@ def edit_rule(exec_action)
     # IPv6 NAT is not supported until Linux 3.7 and iptables 1.4.17
     next if new_resource.table == 'nat' && \
     ip_version == 6 && \
-    ( Chef::VersionConstraint.new("< 3.7").include?(node['kernel']['release'][/\d+\.\d+/]) && \
-    Chef::VersionConstraint.new("< 1.4.17").include?(`iptables --version`[/\d+\.\d+\.\d+/]) )
+    ( Chef::VersionConstraint.new('< 3.7').include?(node['kernel']['release'][/\d+\.\d+/]) && \
+    Chef::VersionConstraint.new('< 1.4.17').include?(`iptables --version`[/\d+\.\d+\.\d+/]))
 
     rule_file = ''
     Array(new_resource.rule).each { |r| rule_file << "--append #{new_resource.chain} #{r.chomp}\n" }
 
     directory "/etc/iptables.d/#{new_resource.table}/#{new_resource.chain}" do
-      owner  'root'
-      group  'root'
-      mode   00700
+      owner 'root'
+      group 'root'
+      mode 00700
       not_if { exec_action == :delete }
     end
 
     rule_path = "/etc/iptables.d/#{new_resource.table}/#{new_resource.chain}/#{new_resource.name}.rule_v#{ip_version}"
 
     r = file rule_path do
-      owner    'root'
-      group    'root'
-      mode     00600
-      content  rule_file
+      owner 'root'
+      group 'root'
+      mode 00600
+      content rule_file
       notifies :create, 'ruby_block[create_rules]', :delayed
       notifies :create, 'ruby_block[restart_iptables]', :delayed
-      action   exec_action
+      action exec_action
     end
 
     new_resource.updated_by_last_action(true) if r.updated_by_last_action?

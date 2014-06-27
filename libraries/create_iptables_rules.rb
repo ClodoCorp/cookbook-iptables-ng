@@ -39,8 +39,8 @@ module Iptables
         # IPv6 NAT is not supported until Linux 3.7 and iptables 1.4.17
         next if table == 'nat' && \
         ip_version == 6 && \
-        ( Chef::VersionConstraint.new("< 3.7").include?(node['kernel']['release'][/\d+\.\d+/]) || \
-        Chef::VersionConstraint.new("< 1.4.17").include?(`iptables --version`[/\d+\.\d+\.\d+/]) )
+        ( Chef::VersionConstraint.new('< 3.7').include?(node['kernel']['release'][/\d+\.\d+/]) || \
+        Chef::VersionConstraint.new('< 1.4.17').include?(`iptables --version`[/\d+\.\d+\.\d+/]))
 
         # Create hashes unless they already exist, and add the rule
         rules[table] ||= {}
@@ -53,8 +53,8 @@ module Iptables
         iptables_restore << "*#{table}\n"
 
         # Get default policies and rules for this chain
-        default_policies = chains.inject({}) {|new_chain, rule| new_chain[rule[0]] = rule[1].select{|k, v| k == 'default'}; new_chain }
-        all_chain_rules  = chains.inject({}) {|new_chain, rule| new_chain[rule[0]] = rule[1].reject{|k, v| k == 'default'}; new_chain }
+        default_policies = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].select { |k, _v| k == 'default' }; new_chain }
+        all_chain_rules  = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].reject { |k, _v| k == 'default' }; new_chain }
 
         # Apply default policies first
         default_policies.each do |chain, policy|
@@ -62,7 +62,7 @@ module Iptables
         end
 
         # Apply rules for this chain, but sort before adding
-        all_chain_rules.each do |chain, chain_rules|
+        all_chain_rules.each do |_chain, chain_rules|
           chain_rules.sort.each { |r| iptables_restore << "#{r.last.chomp}\n" }
         end
 

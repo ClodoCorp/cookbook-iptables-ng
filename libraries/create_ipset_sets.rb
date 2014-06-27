@@ -24,20 +24,20 @@
 
 module Iptables
   module Manage
-    def create_ipset_sets()
+    def create_ipset_sets
       sets = {}
 
-      Dir["/etc/iptables.d/sets/*"].each do |path|
+      Dir['/etc/iptables.d/sets/*'].each do |path|
         set = ::File.basename(path)
         sets[set] = ::File.read(path)
       end
- 
+
       ipset_restore = ''
-      sets.each do |k, v|
+      sets.each do |_k, v|
         ipset_restore << "#{v.chomp}\n"
       end
 
-      Chef::Resource::File.new(node['iptables-ng']["script_sets"], run_context).tap do |file|
+      Chef::Resource::File.new(node['iptables-ng']['script_sets'], run_context).tap do |file|
         file.owner('root')
         file.group('root')
         file.mode(00600)

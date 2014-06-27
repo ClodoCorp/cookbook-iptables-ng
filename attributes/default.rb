@@ -20,14 +20,11 @@
 #
 
 # Packages to install
-default['iptables-ng']['packages'] = case node['platform_family']
-when 'debian'
-  %w{iptables iptables-persistent ipset}
-when 'rhel'
-  %w{iptables iptables-ipv6 ipset}
-else
-  %w{iptables ipset}
-end
+default['iptables-ng']['packages'] = value_for_platform(
+  ['debian'] => { 'default' => %w(iptables iptables-persistent ipset) },
+  ['rhel'] => { 'default' => %w(iptables iptables-ipv6 ipset) },
+  'default' => %w(iptables ipset)
+)
 
 # Where the rules are stored and how they are executed
 case node['platform']
@@ -81,5 +78,4 @@ else
   default['iptables-ng']['script_sets'] = '/etc/ipsets'
 end
 
-default['iptables-ng']['data_bag'] = "iptables-ng"
-
+default['iptables-ng']['data_bag'] = 'iptables-ng'

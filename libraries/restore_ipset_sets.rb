@@ -28,7 +28,7 @@ include Chef::Mixin::ShellOut
 
 module Iptables
   module Manage
-    def restore_ipset_sets()
+    def restore_ipset_sets
       Chef::Log.info 'applying sets manually'
       shell_out!('iptables-save').stdout.each_line do |rule|
         next unless rule.include?('--match-set')

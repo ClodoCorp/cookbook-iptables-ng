@@ -31,7 +31,7 @@ end
 
 # Create directories
 directory '/etc/iptables.d' do
-  mode   00700
+  mode 00700
 end
 
 node['iptables-ng']['rules'].each do |table, chains|
@@ -44,8 +44,8 @@ node['iptables-ng']['rules'].each do |table, chains|
   # Create default policies unless they exist
   chains.each do |chain, policy|
     iptables_ng_chain "default-policy-#{table}-#{chain}" do
-      chain  chain
-      table  table
+      chain chain
+      table table
       policy policy['default']
       action :create_if_missing
     end
