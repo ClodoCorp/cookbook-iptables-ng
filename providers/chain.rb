@@ -50,7 +50,7 @@ def edit_chain(exec_action)
     not_if { exec_action == :delete }
   end
 
-  rule_path = "/etc/iptables.d/#{new_resource.table}/#{new_resource.chain}/default"
+  rule_path = "/etc/iptables.d/#{new_resource.table}/#{new_resource.chain}/00-default"
 
   r = file rule_path do
     owner    'root'

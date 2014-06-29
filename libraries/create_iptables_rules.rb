@@ -30,7 +30,7 @@ module Iptables
       # Retrieve all iptables rules for this ip_version,
       # as well as default policies
       Dir["/etc/iptables.d/*/*/*.rule_v#{ip_version}",
-          '/etc/iptables.d/*/*/default'].each do |path|
+          '/etc/iptables.d/*/*/00-default'].each do |path|
 
         # /etc/iptables.d/#{table}/#{chain}/#{rule}.rule_v#{ip_version}
         table, chain, filename = path.split('/')[3..5]
@@ -53,12 +53,12 @@ module Iptables
         iptables_restore << "*#{table}\n"
 
         # Get default policies and rules for this chain
-        default_policies = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].select { |k, _v| k == 'default' }; new_chain }
-        all_chain_rules  = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].reject { |k, _v| k == 'default' }; new_chain }
+        default_policies = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].select { |k, _v| k == '00-default' }; new_chain }
+        all_chain_rules  = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].reject { |k, _v| k == '00-default' }; new_chain }
 
         # Apply default policies first
         default_policies.each do |chain, policy|
-          iptables_restore << ":#{chain} #{policy['default'].chomp}\n"
+          iptables_restore << ":#{chain} #{policy['00-default'].chomp}\n"
         end
 
         # Apply rules for this chain, but sort before adding
