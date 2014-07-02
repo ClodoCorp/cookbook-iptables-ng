@@ -36,7 +36,7 @@ While iptables-ng tries to automatically determine the correct settings and defa
 # This should install iptables and ip6tables,
 # as well as a system service that takes care of reloading the rules
 # On Debian and Ubuntu, iptables-persistent is used by default.
-node['iptables-ng']['packages'] = [ 'iptables' ]
+node['iptables-ng']['packages'] = [ 'iptables' ]
 
 # The name of the service that will be used to restart iptables
 # If this is left empty, iptables-ng will fall back to iptables-restore
