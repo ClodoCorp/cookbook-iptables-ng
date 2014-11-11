@@ -30,9 +30,11 @@ module Iptables
   module Manage
     def restore_ipset_sets
       Chef::Log.info 'applying sets manually'
-      shell_out!('iptables-save').stdout.each_line do |rule|
-        next unless rule.include?('--match-set')
-        shell_out!("iptables #{rule.sub!(/^-A/, '-D')}").error!
+      %w{iptables ip6tables}.each do |cmd|
+        shell_out!("#{cmd}-save").stdout.each_line do |rule|
+          next unless rule.include?('--match-set')
+          shell_out!("#{cmd} #{rule.sub!(/^-A/, '-D')}").error!
+        end
       end
 
       Chef::Resource::Execute.new('run ipset restore', run_context).tap do |execute|
