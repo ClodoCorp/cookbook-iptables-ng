@@ -1,10 +1,11 @@
-
-
 #
 # Cookbook Name:: iptables-ng
 # Recipe:: default
 #
+# vim: ts=2:sw=2:expandtab
+#
 # Copyright 2013, Chris Aumann
+# Copyright 2014, Alexey Mochkin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,6 +31,32 @@ node['iptables-ng']['sets'].each do |name, options|
     type options.select { |k, _v| k == 'type' }['type'].to_s
     options options.reject { |k, _v| k == 'type' }
   end
+end
+
+# Apply preserved rules
+if !node['iptables-ng']['preserve_keyword'].empty?
+  preserved_rules = Mash.new
+  %w{security mangle raw nat filter}.each do |tbl|
+    %w{iptables ip6tables}.each do |cmd|
+      Chef::Mixin::ShellOut.shell_out!("#{cmd} -t #{tbl} -S").stdout.each_line do |rule|
+        next unless rule.include?(node['iptables-ng']['preserve_keyword'])
+        chain = rule.split[1]
+        case cmd
+          when "iptables"
+            v = 4
+          when "ip6tables"
+            v = 6
+        end
+        preserved_rules[tbl] = Mash.new unless preserved_rules[tbl]
+        preserved_rules[tbl][chain] = Mash.new unless preserved_rules[tbl][chain]
+        preserved_rules[tbl][chain]["preserved#{v}"] = Mash.new unless preserved_rules[tbl][chain]["preserved#{v}"]
+        preserved_rules[tbl][chain]["preserved#{v}"]['rule'] = [] unless preserved_rules[tbl][chain]["preserved#{v}"]['rule']
+        preserved_rules[tbl][chain]["preserved#{v}"]['ip_version'] = v
+        preserved_rules[tbl][chain]["preserved#{v}"]['rule'] << rule.sub(/-A #{chain} (.*)/,'\1')
+      end
+    end
+  end
+  node.set['iptables-ng']['rules'] = Chef::Mixin::DeepMerge.merge(preserved_rules, node['iptables-ng']['rules'])
 end
 
 # Apply rules from node attributes

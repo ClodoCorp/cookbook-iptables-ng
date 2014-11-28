@@ -5,6 +5,7 @@
 # vim: ts=2:sw=2:expandtab
 #
 # Copyright 2014, Vasiliy Tolstov
+# Copyright 2014, Alexey Mochkin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
