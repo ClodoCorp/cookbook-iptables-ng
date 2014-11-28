@@ -38,7 +38,7 @@ module Iptables
       end
 
       Chef::Resource::Execute.new('run ipset restore', run_context).tap do |execute|
-        execute.command("ipset destroy; ipset restore < #{node['iptables-ng']['script_sets']}")
+        execute.command("ipset -exist restore < #{node['iptables-ng']['script_sets']}")
         execute.run_action(:run)
       end
     end
