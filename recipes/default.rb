@@ -38,7 +38,7 @@ if !node['iptables-ng']['preserve_keyword'].empty?
   preserved_rules = Mash.new
   %w{security mangle raw nat filter}.each do |tbl|
     %w{iptables ip6tables}.each do |cmd|
-      Chef::Mixin::ShellOut.shell_out!("#{cmd} -t #{tbl} -S").stdout.each_line do |rule|
+      Chef::Mixin::ShellOut.shell_out("#{cmd} -t #{tbl} -S").stdout.each_line do |rule|
         next unless rule.include?(node['iptables-ng']['preserve_keyword'])
         chain = rule.split[1]
         case cmd
