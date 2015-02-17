@@ -36,9 +36,13 @@ end
 # Apply preserved rules
 if !node['iptables-ng']['preserve_keyword'].empty?
   preserved_rules = Mash.new
-  %w{security mangle raw nat filter}.each do |tbl|
-    %w{iptables ip6tables}.each do |cmd|
-      Chef::Mixin::ShellOut.shell_out("#{cmd} -t #{tbl} -S").stdout.each_line do |rule|
+  # Don't use this array due to autoload modules!
+  #%w{security mangle raw nat filter}.each do |tbl|
+  #  %w{iptables ip6tables}.each do |cmd|
+  Chef::Mixin::ShellOut.shell_out("lsmod | awk -F'\\s+|_' '$1 ~ /^ip6?table/ {print $1,$2}'").stdout.each_line do |modules|
+    cmd = modules.split[0]
+    tbl = modules.split[1]
+      Chef::Mixin::ShellOut.shell_out("#{cmd}s -t #{tbl} -S").stdout.each_line do |rule|
         next unless rule.include?(node['iptables-ng']['preserve_keyword'])
         chain = rule.split[1]
         case cmd
@@ -54,7 +58,7 @@ if !node['iptables-ng']['preserve_keyword'].empty?
         preserved_rules[tbl][chain]["preserved#{v}"]['ip_version'] = v
         preserved_rules[tbl][chain]["preserved#{v}"]['rule'] << rule.sub(/-A #{chain} (.*)/,'\1')
       end
-    end
+  #  end
   end
   node.set['iptables-ng']['rules'] = Chef::Mixin::DeepMerge.merge(preserved_rules, node['iptables-ng']['rules'])
 end
