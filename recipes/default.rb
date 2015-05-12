@@ -36,6 +36,7 @@ end
 # Apply preserved rules
 if !node['iptables-ng']['preserve_keyword'].empty?
   preserved_rules = Mash.new
+  v = nil
   # Don't use this array due to autoload modules!
   #%w{security mangle raw nat filter}.each do |tbl|
   #  %w{iptables ip6tables}.each do |cmd|
@@ -46,9 +47,9 @@ if !node['iptables-ng']['preserve_keyword'].empty?
         next unless rule.include?(node['iptables-ng']['preserve_keyword'])
         chain = rule.split[1]
         case cmd
-          when "iptables"
+          when "iptable"
             v = 4
-          when "ip6tables"
+          when "ip6table"
             v = 6
         end
         preserved_rules[tbl] = Mash.new unless preserved_rules[tbl]
