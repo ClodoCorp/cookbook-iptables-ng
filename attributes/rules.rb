@@ -23,10 +23,6 @@ default['iptables-ng']['rules']['filter']['INPUT']['default'] = 'ACCEPT [0:0]'
 default['iptables-ng']['rules']['filter']['OUTPUT']['default'] = 'ACCEPT [0:0]'
 default['iptables-ng']['rules']['filter']['FORWARD']['default'] = 'ACCEPT [0:0]'
 
-default['iptables-ng']['rules']['nat']['OUTPUT']['default'] = 'ACCEPT [0:0]'
-default['iptables-ng']['rules']['nat']['PREROUTING']['default'] = 'ACCEPT [0:0]'
-default['iptables-ng']['rules']['nat']['POSTROUTING']['default'] = 'ACCEPT [0:0]'
-
 default['iptables-ng']['rules']['mangle']['INPUT']['default'] = 'ACCEPT [0:0]'
 default['iptables-ng']['rules']['mangle']['OUTPUT']['default'] = 'ACCEPT [0:0]'
 default['iptables-ng']['rules']['mangle']['FORWARD']['default'] = 'ACCEPT [0:0]'
