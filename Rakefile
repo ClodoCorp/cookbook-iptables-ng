@@ -1,39 +1,41 @@
-#!/usr/bin/env rake
+require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
+require 'foodcritic'
+require 'kitchen'
 
-desc 'Foodcritic linter'
-task :foodcritic do
-  sh 'foodcritic -f any .'
+# Style tests. Rubocop and Foodcritic
+namespace :style do
+  desc 'Run Ruby style checks'
+  RuboCop::RakeTask.new(:ruby)
+
+  desc 'Run Chef style checks'
+  FoodCritic::Rake::LintTask.new(:chef) do |t|
+    t.options = {
+      fail_tags: ['any'],
+      tags: [
+        '~FC015',
+        '~FC043'
+      ]
+    }
+  end
 end
 
-begin
-  require 'kitchen/rake_tasks'
-  Kitchen::RakeTasks.new
-rescue LoadError
-  puts '>>>>> Kitchen gem not loaded, omitting tasks' unless ENV['CI']
+desc 'Run all style checks'
+task style: ['style:chef', 'style:ruby']
+
+# Rspec and ChefSpec
+desc 'Run ChefSpec examples'
+RSpec::Core::RakeTask.new(:spec)
+
+desc 'Run Test Kitchen with clodo box'
+task :clodo do
+  Kitchen.logger = Kitchen.default_file_logger
+  @loader = Kitchen::Loader::YAML.new(project_config: './.kitchen.clodo.yml')
+  config = Kitchen::Config.new(loader: @loader)
+  config.instances.each do |instance|
+    instance.test(:always)
+  end
 end
 
-# rubocop rake task
-desc 'Ruby style guide linter'
-task :rubocop do
-  sh 'rubocop'
-end
-
-# rubocop jenkins rake task
-desc 'Ruby style guide - checkformat output'
-task :rubocop_checkformat do
-  sh 'rubocop --require rubocop/formatter/checkstyle_formatter --format Rubocop::Formatter::CheckstyleFormatter > checkstyle.xml'
-end
-
-# test-kitchen task
-begin
-  require 'kitchen/rake_tasks'
-  Kitchen::RakeTasks.new
-rescue LoadError
-  puts '>>>>> Kitchen gem not loaded, omitting tasks' unless ENV['CI']
-end
-
-# default tasks are quick, commit tests
-task default: %w(foodcritic rubocop)
-
-# jenkins tasks format for metric tracking
-task jenkins: %w(foodcritic rubocop_checkformat)
+# Default
+task default: %w(style spec clodo)

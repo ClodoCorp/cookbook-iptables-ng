@@ -21,12 +21,10 @@
 # This recipe only creates ruby_blocks that are called later by the LWRPs
 # Do not use it by its own
 
+Chef::Resource::RubyBlock.send(:include, Iptables::Manage)
+
 ruby_block 'create_rules' do
   block do
-    class Chef::Resource::RubyBlock
-      include Iptables::Manage
-    end
-
     [4, 6].each do |ip_version|
       create_iptables_rules(ip_version)
     end
@@ -37,10 +35,6 @@ end
 
 ruby_block 'restart_iptables' do
   block do
-    class Chef::Resource::RubyBlock
-      include Iptables::Manage
-    end
-
     [4, 6].each do |ip_version|
       restart_service(ip_version)
     end
@@ -51,10 +45,6 @@ end
 
 ruby_block 'create_sets' do
   block do
-    class Chef::Resource::RubyBlock
-      include Iptables::Manage
-    end
-
     create_ipset_sets
   end
 
@@ -63,10 +53,6 @@ end
 
 ruby_block 'restore_sets' do
   block do
-    class Chef::Resource::RubyBlock
-      include Iptables::Manage
-    end
-
     restore_ipset_sets
   end
 

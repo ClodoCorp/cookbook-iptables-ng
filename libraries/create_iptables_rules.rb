@@ -23,6 +23,7 @@
 # subscribes / notifies. Therefore, using this workaround.
 
 module Iptables
+  # Module Manage
   module Manage
     def create_iptables_rules(ip_version)
       rules = {}
@@ -31,16 +32,15 @@ module Iptables
       # as well as default policies
       Dir["/etc/iptables.d/*/*/*.rule_v#{ip_version}",
           '/etc/iptables.d/*/*/00-default'].each do |path|
-
         # /etc/iptables.d/#{table}/#{chain}/#{rule}.rule_v#{ip_version}
         table, chain, filename = path.split('/')[3..5]
         rule = ::File.basename(filename)
 
         # IPv6 NAT is not supported until Linux 3.7 and iptables 1.4.17
         next if table == 'nat' && \
-        ip_version == 6 && \
-        ( Chef::VersionConstraint.new('< 3.7').include?(node['kernel']['release'][/\d+\.\d+/]) || \
-        Chef::VersionConstraint.new('< 1.4.17').include?(`iptables --version`[/\d+\.\d+\.\d+/]))
+                ip_version == 6 && \
+                (Chef::VersionConstraint.new('< 3.7').include?(node['kernel']['release'][/\d+\.\d+/]) || \
+                Chef::VersionConstraint.new('< 1.4.17').include?(Mixlib::ShellOut.new('iptables --version').stdout[/\d+\.\d+\.\d+/]))
 
         # Create hashes unless they already exist, and add the rule
         rules[table] ||= {}
@@ -53,8 +53,12 @@ module Iptables
         iptables_restore << "*#{table}\n"
 
         # Get default policies and rules for this chain
-        default_policies = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].select { |k, _v| k == '00-default' }; new_chain }
-        all_chain_rules  = chains.reduce({}) { |new_chain, rule| new_chain[rule[0]] = rule[1].reject { |k, _v| k == '00-default' }; new_chain }
+        default_policies = chains.each_with_object({}) do |rule, new_chain|
+          new_chain[rule[0]] = rule[1].select { |k, _v| k == '00-default' }
+        end
+        all_chain_rules = chains.each_with_object({}) do |rule, new_chain|
+          new_chain[rule[0]] = rule[1].reject { |k, _v| k == '00-default' }
+        end
 
         # Apply default policies first
         default_policies.each do |chain, policy|

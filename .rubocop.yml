@@ -1,4 +1,10 @@
-Encoding:
-  Enabled: False
+Style/FileName:
+  Enabled: false
+AlignParameters:
+  Enabled: false
+MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
 LineLength:
   Max: 200

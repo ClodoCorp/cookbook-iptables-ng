@@ -4,6 +4,6 @@ describe 'iptables-ng::lwrp_chain_create' do
   include Helpers::TestHelpers
 
   it 'should delete default FORWARD policy' do
-    file('/etc/iptables.d/filter/FORWARD/default').wont_exist
+    file('/etc/iptables.d/filter/FORWARD/00-default').wont_exist
   end
 end

@@ -23,6 +23,7 @@
 # subscribes / notifies. Therefore, using this workaround.
 
 module Iptables
+  # Module Manage: restart_service function
   module Manage
     def restart_service(ip_version)
       # Restart iptables service if available

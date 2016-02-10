@@ -30,10 +30,10 @@ package 'ufw' do
 end
 
 # Delete directories
-directory "/etc/iptables.d" do
+directory '/etc/iptables.d' do
   recursive true
   action :delete
-end if File.directory?("/etc/iptables.d")
+end if File.directory?('/etc/iptables.d')
 
 # Create directories
 directory '/etc/iptables.d' do

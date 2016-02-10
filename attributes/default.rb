@@ -35,13 +35,12 @@ when 'debian'
   if node['platform_version'].to_f < 7.0
     # default['iptables-ng']['service_ipv4'] = 'iptables-persistent'
     default['iptables-ng']['script_ipv4'] = '/etc/iptables/rules'
-    default['iptables-ng']['script_ipv6'] = '/etc/iptables/rules.v6'
   else
     default['iptables-ng']['service_ipv4'] = 'iptables-persistent'
     default['iptables-ng']['service_ipv6'] = 'iptables-persistent'
     default['iptables-ng']['script_ipv4'] = '/etc/iptables/rules.v4'
-    default['iptables-ng']['script_ipv6'] = '/etc/iptables/rules.v6'
   end
+  default['iptables-ng']['script_ipv6'] = '/etc/iptables/rules.v6'
   default['iptables-ng']['script_sets'] = '/etc/iptables/sets'
 
 when 'ubuntu'

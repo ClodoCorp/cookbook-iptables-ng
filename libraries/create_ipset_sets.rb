@@ -23,6 +23,7 @@
 # subscribes / notifies. Therefore, using this workaround.
 
 module Iptables
+  # Module Manage: create_ipset_sets function
   module Manage
     def create_ipset_sets
       sets = {}

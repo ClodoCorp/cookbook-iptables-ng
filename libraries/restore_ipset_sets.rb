@@ -28,10 +28,11 @@ require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
 
 module Iptables
+  # Module Manage: restore_ipset_sets function
   module Manage
     def restore_ipset_sets
       Chef::Log.info 'applying sets manually'
-      %w{iptables ip6tables}.each do |cmd|
+      %w(iptables ip6tables).each do |cmd|
         shell_out!("#{cmd}-save").stdout.each_line do |rule|
           next unless rule.include?('--match-set')
           shell_out!("#{cmd} #{rule.sub!(/^-A/, '-D')}").error!
