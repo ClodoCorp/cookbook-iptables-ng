@@ -24,35 +24,35 @@ platforms:
         service_ipv6: netfilter-persistent
 
 suites:
-  -
-    name: lwrp_chain_create_default
-    run_list:
-      - recipe[minitest-handler]
-      - recipe[iptables_ng_test::lwrp_chain_create_default]
+  # -
+  #   name: lwrp_chain_create_default
+  #   run_list:
+  #     - recipe[minitest-handler]
+  #     - recipe[iptables_ng_test::lwrp_chain_create_default]
 
-  -
-    name: lwrp_chain_create_custom
-    run_list:
-      - recipe[minitest-handler]
-      - recipe[iptables_ng_test::lwrp_chain_create_custom]
+  # -
+  #   name: lwrp_chain_create_custom
+  #   run_list:
+  #     - recipe[minitest-handler]
+  #     - recipe[iptables_ng_test::lwrp_chain_create_custom]
 
-  -
-    name: lwrp_chain_create_if_missing
-    run_list:
-      - recipe[minitest-handler]
-      - recipe[iptables_ng_test::lwrp_chain_create_if_missing]
+  # -
+  #   name: lwrp_chain_create_if_missing
+  #   run_list:
+  #     - recipe[minitest-handler]
+  #     - recipe[iptables_ng_test::lwrp_chain_create_if_missing]
 
-  -
-    name: lwrp_chain_create_empty
-    run_list:
-      - recipe[minitest-handler]
-      - recipe[iptables_ng_test::lwrp_chain_create_empty]
+  # -
+  #   name: lwrp_chain_create_empty
+  #   run_list:
+  #     - recipe[minitest-handler]
+  #     - recipe[iptables_ng_test::lwrp_chain_create_empty]
 
-  -
-    name: lwrp_rule_create_default
-    run_list:
-      - recipe[minitest-handler]
-      - recipe[iptables_ng_test::lwrp_rule_create_default]
+  # -
+  #   name: lwrp_rule_create_default
+  #   run_list:
+  #     - recipe[minitest-handler]
+  #     - recipe[iptables_ng_test::lwrp_rule_create_default]
 
   -
     name: lwrp_rule_create_custom

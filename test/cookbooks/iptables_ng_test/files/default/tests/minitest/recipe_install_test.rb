@@ -4,22 +4,22 @@ describe 'iptables-ng::install' do
   include Helpers::TestHelpers
 
   it 'should set all default policies to ACCEPT' do
-    file('/etc/iptables.d/filter/INPUT/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/filter/OUTPUT/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/filter/FORWARD/default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/filter/INPUT/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/filter/OUTPUT/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/filter/FORWARD/00-default').must_include('ACCEPT [0:0]')
 
-    file('/etc/iptables.d/nat/OUTPUT/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/nat/PREROUTING/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/nat/POSTROUTING/default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/nat/OUTPUT/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/nat/PREROUTING/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/nat/POSTROUTING/00-default').must_include('ACCEPT [0:0]')
 
-    file('/etc/iptables.d/mangle/INPUT/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/mangle/OUTPUT/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/mangle/FORWARD/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/mangle/PREROUTING/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/mangle/POSTROUTING/default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/mangle/INPUT/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/mangle/OUTPUT/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/mangle/FORWARD/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/mangle/PREROUTING/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/mangle/POSTROUTING/00-default').must_include('ACCEPT [0:0]')
 
-    file('/etc/iptables.d/raw/OUTPUT/default').must_include('ACCEPT [0:0]')
-    file('/etc/iptables.d/raw/PREROUTING/default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/raw/OUTPUT/00-default').must_include('ACCEPT [0:0]')
+    file('/etc/iptables.d/raw/PREROUTING/00-default').must_include('ACCEPT [0:0]')
   end
 
   it 'should not apply other iptables rules' do

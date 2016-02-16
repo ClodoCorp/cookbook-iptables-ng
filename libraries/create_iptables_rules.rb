@@ -32,7 +32,8 @@ module Iptables
       # as well as default policies
       Dir["/etc/iptables.d/*/*/*.rule_v#{ip_version}",
           '/etc/iptables.d/*/*/00-default'].each do |path|
-        # /etc/iptables.d/#{table}/#{chain}/#{rule}.rule_v#{ip_version}
+        # next unless File.exist?(path)
+
         table, chain, filename = path.split('/')[3..5]
         rule = ::File.basename(filename)
 
@@ -40,7 +41,7 @@ module Iptables
         next if table == 'nat' && \
                 ip_version == 6 && \
                 (Chef::VersionConstraint.new('< 3.7').include?(node['kernel']['release'][/\d+\.\d+/]) || \
-                Chef::VersionConstraint.new('< 1.4.17').include?(Mixlib::ShellOut.new('iptables --version').stdout[/\d+\.\d+\.\d+/]))
+                Chef::VersionConstraint.new('< 1.4.17').include?(Mixlib::ShellOut.new('iptables --version').run_command.stdout[/\d+\.\d+\.\d+/]))
 
         # Create hashes unless they already exist, and add the rule
         rules[table] ||= {}

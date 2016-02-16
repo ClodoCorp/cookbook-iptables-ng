@@ -51,6 +51,7 @@ def edit_rule(exec_action)
       owner 'root'
       group 'root'
       mode 00700
+      recursive true
       not_if { exec_action == :delete }
     end
 

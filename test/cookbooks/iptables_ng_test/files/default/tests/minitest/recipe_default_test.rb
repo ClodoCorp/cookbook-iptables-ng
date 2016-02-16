@@ -4,7 +4,7 @@ describe 'iptables-ng::default' do
   include Helpers::TestHelpers
 
   it 'should set default filter FORWARD policy to DROP' do
-    file('/etc/iptables.d/filter/FORWARD/default').must_include('DROP [0:0]')
+    file('/etc/iptables.d/filter/FORWARD/00-default').must_include('DROP [0:0]')
   end
 
   it 'should apply default filter FORWARD policy' do
@@ -33,7 +33,7 @@ describe 'iptables-ng::default' do
   end
 
   it 'should set default mangle FORARD policy to DROP' do
-    file('/etc/iptables.d/mangle/FORWARD/default').must_include('DROP [0:0]')
+    file('/etc/iptables.d/mangle/FORWARD/00-default').must_include('DROP [0:0]')
   end
 
   it 'should apply default mangle FORARD policy' do
