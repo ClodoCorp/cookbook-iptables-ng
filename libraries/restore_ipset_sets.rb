@@ -26,6 +26,7 @@
 # subscribes / notifies. Therefore, using this workaround.
 require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
+require 'pathname'
 
 module Iptables
   # Module Manage: restore_ipset_sets function
@@ -33,6 +34,7 @@ module Iptables
     def restore_ipset_sets
       Chef::Log.info 'applying sets manually'
       %w(iptables ip6tables).each do |cmd|
+        next unless Pathname.new("#{cmd}-save").exist?
         shell_out!("#{cmd}-save").stdout.each_line do |rule|
           next unless rule.include?('--match-set')
           shell_out!("#{cmd} #{rule.sub!(/^-A/, '-D')}").error!
